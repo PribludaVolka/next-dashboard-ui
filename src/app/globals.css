@@ -106,3 +106,7 @@
     color: gray !important;
     margin-bottom: 5px !important;
 }
+
+.rbc-day-slot .rbc-event, .rbc-day-slot .rbc-background-event {
+    flex-wrap: nowrap !important;
+}
