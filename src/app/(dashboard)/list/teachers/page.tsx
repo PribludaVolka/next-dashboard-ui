@@ -1,6 +1,7 @@
 import Pagination from "@/components/Pagination"
 import Table from "@/components/Table"
 import TableSearch from "@/components/TableSearch"
+import FormModal from "@/components/FormModal"
 import { role, teachersData } from "@/lib/data"
 import { headers } from "next/headers"
 import Image from "next/image"
@@ -15,7 +16,7 @@ type Teacher = {
     phone: string;
     subjects: string[];
     classes: string[];
-    adress: string;
+    address: string;
 }
 
 const columns = [
@@ -44,8 +45,8 @@ const columns = [
         className:"hidden lg:table-cell"
     },
     {
-        header:"Adress", 
-        accessor:"adress", 
+        header:"Address", 
+        accessor:"address", 
         className:"hidden lg:table-cell"
     },
     {
@@ -68,7 +69,7 @@ const TeacherListPage = () => {
             <td className = "hidden md:table-cell">{item.subjects.join(", ")}</td>
             <td className = "hidden md:table-cell">{item.classes.join(", ")}</td>
             <td className = "hidden md:table-cell">{item.phone}</td>
-            <td className = "hidden md:table-cell">{item.adress}</td>
+            <td className = "hidden md:table-cell">{item.address}</td>
             <td>
                 <div className = "flex items-center gap-2">
                     <Link href={"/list/teachers/${item.id}"}>
@@ -77,9 +78,7 @@ const TeacherListPage = () => {
                         </button>
                     </Link>
                     { role === "admin" && (
-                        <button className = "w-7 h-7 flex items-center justify-center rounded-full bg-schoolPurple">
-                            <Image src = "/delete.png" alt = "" width={16} height={16} />
-                        </button>
+                        <FormModal table={"teacher"} type={"delete"} id={item.id}/>
                         )}
                 </div>
             </td>
@@ -101,9 +100,7 @@ const TeacherListPage = () => {
                             <Image src = "/sort.png" alt = "" width={14} height={14}/>
                         </button>
                         { role === "admin" && (
-                            <button className = "w-8 h-8 flex items-center justify-center rounded-full bg-schoolYellow">
-                                <Image src = "/plus.png" alt = "" width={14} height={14}/>
-                            </button>
+                            <FormModal table={"teacher"} type={"create"} />
                         )}
                     </div>
                 </div>
