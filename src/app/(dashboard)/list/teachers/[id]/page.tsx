@@ -1,6 +1,7 @@
 "use client"
 import Announcements from "@/components/Announcements";
 import BigCalendar from "@/components/BigCalendar";
+import FormModal from "@/components/FormModal";
 import Performance from "@/components/Performance";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,7 +19,25 @@ const SingleTeacherPage = () => {
                             <Image src = "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200" alt = "" width={144} height={144} className = "rounded-full w-36 h-36 object-cover"/>
                         </div>
                         <div className = "w-2/3 flex-col justify-between gap-4">
-                            <h1 className = "text-xl font-semibold">Stepan Pan</h1>
+                            <div className = "flex items-center gap-4">
+                                <h1 className = "text-xl font-semibold">Stepan Pan</h1>
+                                    <FormModal table = "teacher" type = "update" data={
+                                    {
+                                        id: 1,
+                                        username: "wasd",
+                                        email: "test@gmail.com",
+                                        password: "password",
+                                        firstName: "Stepan",
+                                        lastName: "Pan",
+                                        phone: "+1 234 567 89",
+                                        address: "1234 Ukr asd9",
+                                        bloodType: "A+",
+                                        dateOfBirth: "2003-10-20",
+                                        sex: "male",
+                                        img: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200",
+                                    }
+                                }/>
+                            </div>  
                             <p className = "text-sm text-gray-500">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non, ab!</p>
                             <div className = "flex items-center justify-between gap-2 flex-wrap text-xs font-medium mt-5">
                                 <div className = "w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
@@ -79,7 +98,7 @@ const SingleTeacherPage = () => {
                 {/* BOTTOM */}
                 <div className = "mt-4 bg-white rounded-md p-4 h-[800px]">
                     <h1>Teacher&apos;s Schedule</h1>
-                    {/* BIG CALENDAR */}
+                    <BigCalendar />
                 </div>
             </div>
             {/*RIGHT*/}

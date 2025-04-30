@@ -3,6 +3,33 @@
 import Image from "next/image";
 import { useState } from "react";
 import TeacherForm from "./forms/TeacherForm";
+import StudentForm from "./forms/StudentForm";
+import ParentForm from "./forms/ParentForm";
+import SubjectForm from "./forms/SubjectForm";
+import ClassForm from "./forms/ClassForm";
+import LessonForm from "./forms/LessonForm";
+import ExamForm from "./forms/ExamForm";
+import AssignmentForm from "./forms/AssignmentForm";
+import ResultForm from "./forms/ResultForm";
+import AttendanceForm from "./forms/AttendanceForm";
+import EventForm from "./forms/EventForm";
+import AnnouncementForm from "./forms/AnnouncementForm";
+
+const forms:{[key:string] : (type:"create" | "update", data?:any) => JSX.Element;
+}={
+    teacher: (type, data) => <TeacherForm type={type} data={data}/>,
+    student: (type, data) => <StudentForm type={type} data={data}/>,
+    parent: (type, data) => <ParentForm type={type} data={data}/>,
+    subject: (type, data) => <SubjectForm type={type} data={data}/>,
+    class: (type, data) => <ClassForm type={type} data={data}/>,
+    lesson: (type, data) => <LessonForm type={type} data={data}/>,
+    exam: (type, data) => <ExamForm type={type} data={data}/>,
+    assignment: (type, data) => <AssignmentForm type={type} data={data}/>,
+    result: (type, data) => <ResultForm type={type} data={data}/>,
+    attendance: (type, data) => <AttendanceForm type={type} data={data}/>,
+    event: (type, data) => <EventForm type={type} data={data}/>,
+    announcement: (type, data) => <AnnouncementForm type={type} data={data}/>,
+};
 
 const FormModal = ({table,type,data,id} : {
     table: "teacher"| "student" | "parent" | "subject" | "class" | "lesson" | "exam" | "assignment" | "result" | "attendance" | "event" | "announcement";
@@ -21,10 +48,12 @@ const FormModal = ({table,type,data,id} : {
             <span className = "text-center font-medium">All data will be lost. Are you sure you want to delete this {table}?</span>
             <button className = "bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">Delete</button>
         </form>
+        ) : type === "create" || type === "update" ? (
+            forms[table](type, data)
         ) : (
-            <TeacherForm type={"create"} />
+            "Form not found!"
         );
-    }
+    };
 
     return (
         <>
