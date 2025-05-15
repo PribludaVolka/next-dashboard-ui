@@ -7,6 +7,8 @@ const Table = ({
     renderRow : (item:any) => React.ReactNode;
     data : any[];
 }) => {
+
+    console.log(data);
     return (
         <table className = "w-full mt-4 ">
             <thead>
@@ -16,7 +18,7 @@ const Table = ({
                     ))}
                 </tr>
             </thead>
-            <tbody>{data.map((item) => renderRow(item))}</tbody>
+            <tbody>{data?.map((item) => renderRow(item))}</tbody>
         </table>
     )
 }

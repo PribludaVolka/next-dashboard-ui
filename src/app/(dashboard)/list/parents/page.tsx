@@ -1,20 +1,19 @@
+"use client"
+
 import FormModal from "@/components/FormModal"
 import Pagination from "@/components/Pagination"
 import Table from "@/components/Table"
 import TableSearch from "@/components/TableSearch"
+import IParent from "@/interface/IParent"
+import IStudent from "@/interface/IStudent"
 import { parentsData, role, studentsData, teachersData } from "@/lib/data"
+import axios from "axios"
 import { headers } from "next/headers"
 import Image from "next/image"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
-type Parent = {
-    id: number;
-    name: string;
-    email?: string;
-    students: string[];
-    phone: string;
-    address: string;
-}
+type ParentList = IParent & {students:IStudent[]};
 
 const columns = [
     {
@@ -42,8 +41,7 @@ const columns = [
     },
 ]
 
-const ParentListPage = () => {
-    const renderRow = (item:Parent) => (
+const renderRow = (item:ParentList) => (
         <tr key={item.id} className = "border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-schoolPurpleLight">
             <td className = "flex items-center gap-4 p-4">
                 <div className = "flex flex-col">
@@ -51,7 +49,7 @@ const ParentListPage = () => {
                     <p className = "text-xs text-gray-500">{item?.email}</p>
                 </div>
             </td>
-            <td className = "hidden md:table-cell">{item.students.join(", ")}</td>
+            <td className="hidden md:table-cell">{item.students?.map((student) => student.surname).join(",")}</td>
             <td className = "hidden md:table-cell">{item.phone}</td>
             <td className = "hidden md:table-cell">{item.address}</td>  
             <td>
@@ -66,6 +64,20 @@ const ParentListPage = () => {
             </td>
         </tr>
     );
+
+const ParentListPage = () => {
+    
+    const [parents, setParent] = useState([]);
+  
+     useEffect(() => {
+        axios.get('http://localhost:3001/students') 
+        .then(response => {
+        setParent(response.data);
+      })
+        .catch(error => {
+        console.error("Ошибка при получении данных:", error);
+      });
+    }, []);
 
     return (
         <div className = "bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -88,9 +100,9 @@ const ParentListPage = () => {
                 </div>
             </div>
             {/*LIST*/}
-            <Table columns={columns} renderRow={renderRow} data={parentsData} />
+            <Table columns={columns} renderRow={renderRow} data={parents} />
             {/*PAGES*/}
-            <Pagination />
+            <Pagination page={0} count={0} />
         </div>
     )
 }
