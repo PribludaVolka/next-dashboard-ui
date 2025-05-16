@@ -1,17 +1,17 @@
+"use client"
 import FormModal from "@/components/FormModal"
 import Pagination from "@/components/Pagination"
 import Table from "@/components/Table"
 import TableSearch from "@/components/TableSearch"
-import { parentsData, role, studentsData, subjectsData, teachersData } from "@/lib/data"
-import { headers } from "next/headers"
-import Image from "next/image"
-import Link from "next/link"
+import IClass from "@/interface/IClass"
+import ISubject from "@/interface/ISubject"
+import ITeacher from "@/interface/ITeacher"
+import { role } from "@/lib/data"
+import axios from "axios"
+import { useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
 
-type Subject = {
-    id: number;
-    name: string;
-    teachers: string[];
-}
+type SubjectList = ISubject & { teachers: ITeacher[]; classes: IClass[] }
 
 const columns = [
     {
@@ -30,10 +30,30 @@ const columns = [
 ]
 
 const SubjectListPage = () => {
-    const renderRow = (item:Subject) => (
+    const [subjects, setSubjects] = useState([]);
+    const [count, setCount] = useState(0);
+    const searchParams = useSearchParams();
+    const [searchValue, setSearchValue] = useState('');
+    const currentPage = parseInt(searchParams.get("page") || "1");
+
+    const fetchSubjects = async (page = 1, searchValue = '') => {
+        try {
+            const res = await axios.get(`http://localhost:3001/subject?page=${page}&search=${searchValue}`);
+            setSubjects(res.data.subjects);
+            setCount(res.data.count);
+        } catch (err) {
+            console.error("Ошибка загрузки батіків:", err);
+        }
+    };
+  
+    useEffect(() => {
+        fetchSubjects(currentPage, searchValue);
+    }, [currentPage, searchValue]);
+
+    const renderRow = (item:SubjectList) => (
         <tr key={item.id} className = "border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-schoolPurpleLight">
             <td className = "flex items-center gap-4 p-4">{item.name}</td>
-            <td className = "hidden md:table-cell">{item.teachers.join(", ")}</td>
+            <td className = "hidden md:table-cell">{item.teachers?.join(", ")}</td>
             <td>
                 <div className = "flex items-center gap-2">
                     { role === "admin" && (
@@ -53,14 +73,8 @@ const SubjectListPage = () => {
             <div className = "flex items-center justify-between">
                 <h1 className = "hidden md:block text-lg font-semibold">All Subjects</h1>
                 <div className = "flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-                    <TableSearch />
+                   <TableSearch value={searchValue} onChange={(e: any) => setSearchValue(e)} />
                     <div className = "flex items-center gap-4 self-end">
-                        <button className = "w-8 h-8 flex items-center justify-center rounded-full bg-schoolYellow">
-                            <Image src = "/filter.png" alt = "" width={14} height={14}/>
-                        </button>
-                        <button className = "w-8 h-8 flex items-center justify-center rounded-full bg-schoolYellow">
-                            <Image src = "/sort.png" alt = "" width={14} height={14}/>
-                        </button>
                         { role === "admin" && (          
                         <FormModal table={"subject"} type={"create"} />
                         )}
@@ -68,9 +82,9 @@ const SubjectListPage = () => {
                 </div>
             </div>
             {/*LIST*/}
-            <Table columns={columns} renderRow={renderRow} data={subjectsData} />
+            <Table columns={columns} renderRow={renderRow} data={subjects} />
             {/*PAGES*/}
-            <Pagination />
+            <Pagination page={currentPage} count={count} />
         </div>
     )
 }

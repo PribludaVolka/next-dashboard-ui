@@ -6,11 +6,10 @@ import Table from "@/components/Table"
 import TableSearch from "@/components/TableSearch"
 import IParent from "@/interface/IParent"
 import IStudent from "@/interface/IStudent"
-import { parentsData, role, studentsData, teachersData } from "@/lib/data"
+import { role } from "@/lib/data"
 import axios from "axios"
-import { headers } from "next/headers"
 import Image from "next/image"
-import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 type ParentList = IParent & {students:IStudent[]};
@@ -66,18 +65,25 @@ const renderRow = (item:ParentList) => (
     );
 
 const ParentListPage = () => {
-    
     const [parents, setParent] = useState([]);
+    const [count, setCount] = useState(0);
+    const searchParams = useSearchParams();
+    const [searchValue, setSearchValue] = useState('');
+    const currentPage = parseInt(searchParams.get("page") || "1");
+
+    const fetchParents = async (page = 1, searchValue = '') => {
+        try {
+            const res = await axios.get(`http://localhost:3001/parents?page=${page}&search=${searchValue}`);
+            setParent(res.data.parents);
+            setCount(res.data.count);
+        } catch (err) {
+            console.error("Ошибка загрузки батіків:", err);
+        }
+    };
   
-     useEffect(() => {
-        axios.get('http://localhost:3001/students') 
-        .then(response => {
-        setParent(response.data);
-      })
-        .catch(error => {
-        console.error("Ошибка при получении данных:", error);
-      });
-    }, []);
+    useEffect(() => {
+        fetchParents(currentPage, searchValue);
+    }, [currentPage, searchValue]);
 
     return (
         <div className = "bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -85,14 +91,8 @@ const ParentListPage = () => {
             <div className = "flex items-center justify-between">
                 <h1 className = "hidden md:block text-lg font-semibold">All Parents</h1>
                 <div className = "flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-                    <TableSearch />
+                    <TableSearch value={searchValue} onChange={(e: any) => setSearchValue(e)} />
                     <div className = "flex items-center gap-4 self-end">
-                        <button className = "w-8 h-8 flex items-center justify-center rounded-full bg-schoolYellow">
-                            <Image src = "/filter.png" alt = "" width={14} height={14}/>
-                        </button>
-                        <button className = "w-8 h-8 flex items-center justify-center rounded-full bg-schoolYellow">
-                            <Image src = "/sort.png" alt = "" width={14} height={14}/>
-                        </button>
                         { role === "admin" && (
                             <FormModal table={"parent"} type={"create"} />
                         )}
@@ -102,7 +102,7 @@ const ParentListPage = () => {
             {/*LIST*/}
             <Table columns={columns} renderRow={renderRow} data={parents} />
             {/*PAGES*/}
-            <Pagination page={0} count={0} />
+            <Pagination page={currentPage} count={count} />
         </div>
     )
 }

@@ -5,6 +5,6 @@ import ITeacher from "./ITeacher";
 export default interface IUserSex {
     id: number;
     name: string;
-    teachers: ITeacher;
-    lessons: ILesson;
+    teachers: ITeacher[];
+    lessons: ILesson[];
 }

@@ -7,13 +7,12 @@ import TableSearch from "@/components/TableSearch"
 import IAttendance from "@/interface/IAttendance"
 import IResult from "@/interface/IResult"
 import IStudent from "@/interface/IStudent"
-import { role, studentsData, teachersData } from "@/lib/data"
-import { headers } from "next/headers"
+import { role} from "@/lib/data"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 
 type StudentList = IStudent & {attendances:IAttendance[]} & {results:IResult[]};
 
@@ -59,24 +58,24 @@ const StudentListPage = () => {
     const [students, setStudent] = useState<StudentList[]>([]);
     const [count, setCount] = useState(0);
     const searchParams = useSearchParams();
-    const router = useRouter();
-    const pathname = usePathname();
+    const [searchValue, setSearchValue] = useState('');
 
     const currentPage = parseInt(searchParams.get("page") || "1");
 
-    const fetchStudents = async (page = 1) => {
+
+    const fetchStudents = async (page = 1, searchValue = '') => {
         try {
-            const res = await axios.get(`http://localhost:3001/students?page=${page}`);
-            setStudent(res.data);
-            setCount(res.data.length);
+            const res = await axios.get(`http://localhost:3001/students?page=${page}&search=${searchValue}`);
+            setStudent(res.data.students);
+            setCount(res.data.count);
         } catch (err) {
             console.error("Ошибка загрузки учеников:", err);
         }
     }
 
     useEffect(() => {
-        fetchStudents(currentPage);
-    }, [currentPage]);
+        fetchStudents(currentPage, searchValue);
+    }, [currentPage, searchValue]);
 
     return (
         <div className = "bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -84,14 +83,8 @@ const StudentListPage = () => {
             <div className = "flex items-center justify-between">
                 <h1 className = "hidden md:block text-lg font-semibold">All Students</h1>
                 <div className = "flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-                    <TableSearch />
+                    <TableSearch value={searchValue} onChange={(e: any) => setSearchValue(e)} />
                     <div className = "flex items-center gap-4 self-end">
-                        <button className = "w-8 h-8 flex items-center justify-center rounded-full bg-schoolYellow">
-                            <Image src = "/filter.png" alt = "" width={14} height={14}/>
-                        </button>
-                        <button className = "w-8 h-8 flex items-center justify-center rounded-full bg-schoolYellow">
-                            <Image src = "/sort.png" alt = "" width={14} height={14}/>
-                        </button>
                         { role === "admin" && (
                             <FormModal table={"student"} type={"create"} />
                         )}

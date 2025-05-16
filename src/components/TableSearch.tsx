@@ -1,23 +1,20 @@
 'use client'
 
 import Image from "next/image"
-import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import React from "react"
 
-const TableSearch = () => {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+interface ISearch{
+  value?: any;
+  onChange?: any;
+}
+
+const TableSearch = ({ value, onChange }: ISearch) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const value = (e.currentTarget[0] as HTMLInputElement).value
-
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("search", value)
-    params.set("page", "1") // сброс на первую страницу при поиске
-    router.push(`${pathname}?${params.toString()}`)
-  }
+    e.preventDefault();
+    const inputValue = (e.currentTarget[0] as HTMLInputElement).value;
+    onChange(inputValue); 
+  };
 
   return (
     <form
@@ -28,6 +25,8 @@ const TableSearch = () => {
       <input
         type="text"
         placeholder="Search..."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="w-[200px] p-2 bg-transparent outline-none"
       />
     </form>
