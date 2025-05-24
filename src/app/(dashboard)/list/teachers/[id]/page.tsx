@@ -1,116 +1,124 @@
+"use client"
+import Announcements from "@/components/Announcements";
+import BigCalendar from "@/components/BigCalendar";
+import FormModal from "@/components/FormModal";
+import Performance from "@/components/Performance";
+import Image from "next/image";
+import Link from "next/link";
 'use client'
 
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import Pagination from '@/components/Pagination'
-import Table from '@/components/Table'
-import TableSearch from '@/components/TableSearch'
-import ITeacher from '@/interface/ITeacher'
-import ISubject from '@/interface/ISubject'
-import IClass from '@/interface/IClass'
-import FormModal from '@/components/FormModal'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useSearchParams, useRouter, usePathname } from 'next/navigation'
-
-type TeacherList = ITeacher & {
-  subjects: ISubject[]
-  classes: IClass[]
-}
-
-const columns = [
-  { header: 'Info', accessor: 'info' },
-  { header: 'Teacher ID', accessor: 'teacherId', className: 'hidden md:table-cell' },
-  { header: 'Subjects', accessor: 'subjects', className: 'hidden md:table-cell' },
-  { header: 'Classes', accessor: 'classes', className: 'hidden md:table-cell' },
-  { header: 'Phone', accessor: 'phone', className: 'hidden lg:table-cell' },
-  { header: 'Address', accessor: 'address', className: 'hidden lg:table-cell' },
-  { header: 'Actions', accessor: 'action' },
-]
-
-const renderRow = (item: TeacherList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-schoolPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">
-      <Image
-        src={item.img || '/noAvatar.png'}
-        alt=""
-        width={40}
-        height={40}
-        className="md:hidden xl:block w-10 h-10 rounded-full object-cover"
-      />
-      <div className="flex flex-col">
-        <h3 className="font-semibold">{item.name}</h3>
-        <p className="text-xs text-gray-500">{item.email}</p>
-      </div>
-    </td>
-    <td className="hidden md:table-cell">{item.username}</td>
-    <td className="hidden md:table-cell">{item.subjects.map((s) => s.name).join(', ')}</td>
-    <td className="hidden md:table-cell">{item.classes.map((c) => c.name).join(', ')}</td>
-    <td className="hidden lg:table-cell">{item.phone}</td>
-    <td className="hidden lg:table-cell">{item.address}</td>
-    <td>
-      <div className="flex items-center gap-2">
-        <Link href={`/list/teachers/${item.id}`}>
-          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-schoolSky">
-            <Image src="/view.png" alt="" width={16} height={16} />
-          </button>
-        </Link>
-        <FormModal table="teacher" type="delete" id={item.id} />
-      </div>
-    </td>
-  </tr>
-)
-
-const TeacherListPage = () => {
-  const [teachers, setTeachers] = useState<TeacherList[]>([])
-  const [count, setCount] = useState(0)
-
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
-
-  const currentPage = parseInt(searchParams.get('page') || '1')
-  const limit = parseInt(searchParams.get('limit') || '5')
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('page', currentPage.toString())
-    params.set('limit', limit.toString())
-
-    axios
-      .get(`http://localhost:3001/teachers?${params.toString()}`)
-      .then((res) => {
-        setTeachers(res.data.teachers)
-        setCount(res.data.count)
-      })
-      .catch((err) => console.error('Ошибка загрузки учителей:', err))
-  }, [searchParams])
-
-
-  return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">All Teachers</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-schoolYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-schoolYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
-            <FormModal table="teacher" type="create" />
-          </div>
+const SingleTeacherPage = () => {
+    return (
+        <div className = "flex-1 p-4 flex flex-col xl:flex-row gap-4">
+            {/*LEFT*/}
+            <div className = "w-full xl:w-2/3">
+                {/* TOP */}
+                <div className = "flex flex-col lg:flex-row gap-4">
+                    {/* USER INFO CARD */}
+                    <div className = "bg-schoolSky py-6 px-4 rounded-md flex-1 flex gap-4">
+                        <div className = "w-1/3">
+                            <Image src = "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200" alt = "" width={144} height={144} className = "rounded-full w-36 h-36 object-cover"/>
+                        </div>
+                        <div className = "w-2/3 flex-col justify-between gap-4">
+                            <div className = "flex items-center gap-4">
+                                <h1 className = "text-xl font-semibold">Stepan Pan</h1>
+                                    <FormModal table = "teacher" type = "update" data={
+                                    {
+                                        id: 1,
+                                        username: "wasd",
+                                        email: "test@gmail.com",
+                                        password: "password",
+                                        firstName: "Stepan",
+                                        lastName: "Pan",
+                                        phone: "+1 234 567 89",
+                                        address: "1234 Ukr asd9",
+                                        bloodType: "A+",
+                                        dateOfBirth: "2003-10-20",
+                                        sex: "male",
+                                        img: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200",
+                                    }
+                                }/>
+                            </div>  
+                            <p className = "text-sm text-gray-500">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non, ab!</p>
+                            <div className = "flex items-center justify-between gap-2 flex-wrap text-xs font-medium mt-5">
+                                <div className = "w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                                    <Image src = "/blood.png" alt = "" width={14} height={14}/>
+                                    <span>A+</span>
+                                </div>
+                                <div className = "w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                                    <Image src = "/date.png" alt = "" width={14} height={14}/>
+                                    <span>April 2025</span>
+                                </div>
+                                <div className = "w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                                    <Image src = "/mail.png" alt = "" width={14} height={14}/>
+                                    <span>example@gmail.com</span>
+                                </div>
+                                <div className = "w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                                    <Image src = "/phone.png" alt = "" width={14} height={14}/>
+                                    <span>+1 234 567</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* SMALL CARDS */}
+                    <div className = "flex-1 flex gap-4 justify-between flex-wrap">
+                        {/* CARD */}
+                        <div className = "bg-white w-full p-4 rounded-md flex gap-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                            <Image src = "/singleAttendance.png" alt = "" width={24} height={24} className = "w-6 h-6" />
+                            <div className = "">
+                                <h1 className = "text-xl font-semibold">90%</h1>
+                                <span className = "text-sm text-gray-400">Attendance</span>
+                            </div>
+                        </div>
+                        {/* CARD */}
+                        <div className = "bg-white w-full p-4 rounded-md flex gap-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                            <Image src = "/singleBranch.png" alt = "" width={24} height={24} className = "w-6 h-6" />
+                            <div className = "">
+                                <h1 className = "text-xl font-semibold">2</h1>
+                                <span className = "text-sm text-gray-400">Branches</span>
+                            </div>
+                        </div>
+                        {/* CARD */}
+                        <div className = "bg-white w-full p-4 rounded-md flex gap-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                            <Image src = "/singleLesson.png" alt = "" width={24} height={24} className = "w-6 h-6" />
+                            <div className = "">
+                                <h1 className = "text-xl font-semibold">6</h1>
+                                <span className = "text-sm text-gray-400">Lessons</span>
+                            </div>
+                        </div>
+                        {/* CARD */}
+                        <div className = "bg-white w-full p-4 rounded-md flex gap-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                            <Image src = "/singleClass.png" alt = "" width={24} height={24} className = "w-6 h-6" />
+                            <div className = "">
+                                <h1 className = "text-xl font-semibold">6</h1>
+                                <span className = "text-sm text-gray-400">Classes</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/* BOTTOM */}
+                <div className = "mt-4 bg-white rounded-md p-4 h-[800px]">
+                    <h1>Teacher&apos;s Schedule</h1>
+                    <BigCalendar />
+                </div>
+            </div>
+            {/*RIGHT*/}
+            <div className = "w-full xl:w-1/3 flex flex-col gap-4">
+                <div className = "bg-white p-4 rounded-md">
+                    <h1 className = "text-xl font-semibold">Shortcuts</h1>
+                    <div className = "mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
+                        <Link className = "p-3 rounded-md bg-schoolSkyLight" href = {"/list/classes?teacherId=${teacher.id"}>Teacher&apos;s Classes</Link>
+                        <Link className = "p-3 rounded-md bg-schoolPurpleLight" href = {"/list/students?teacherId=${teacher.id"}>Teacher&apos;s Students</Link>
+                        <Link className = "p-3 rounded-md bg-schoolYellowLight" href = {"/list/lessons?teacherId=${teacher.id"}>Teacher&apos;s Lessons</Link>
+                        <Link className = "p-3 rounded-md bg-pink-50" href = {"/list/exams?teacherId=${teacher.id"}>Teacher&apos;s Exams</Link>
+                        <Link className = "p-3 rounded-md bg-green-50" href = {"/list/assignments?teacherId=${teacher.id"}>Teacher&apos;s Assignment</Link>
+                    </div>
+                </div>
+                <Performance />
+                <Announcements />
+            </div>
         </div>
-      </div>
-      <Table columns={columns} renderRow={renderRow} data={teachers} />
-      <Pagination page={currentPage} count={count} />
-    </div>
-  )
-}
+    );
+};
 
-export default TeacherListPage
+export default SingleTeacherPage;

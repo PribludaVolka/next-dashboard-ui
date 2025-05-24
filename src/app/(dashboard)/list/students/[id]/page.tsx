@@ -88,11 +88,11 @@ const SingleStudentPage = () => {
                 <div className = "bg-white p-4 rounded-md">
                     <h1 className = "text-xl font-semibold">Shortcuts</h1>
                     <div className = "mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
-                        <Link className = "p-3 rounded-md bg-schoolSkyLight" href = "/">Student&apos;s Lessons</Link>
-                        <Link className = "p-3 rounded-md bg-schoolPurpleLight" href = "/list/teachers?classId=${student.classId}">Student&apos;s Teachers</Link>
-                        <Link className = "p-3 rounded-md bg-pink-50" href = "/">Student&apos;s Exams</Link>
-                        <Link className = "p-3 rounded-md bg-green-50" href = "/">Student&apos;s Assignment</Link>
-                        <Link className = "p-3 rounded-md bg-schoolYellowLight" href = "/">Student&apos;s Results</Link>
+                        <Link className = "p-3 rounded-md bg-schoolSkyLight" href = {"/list/lessons?classId=${student.classId"}>Student&apos;s Lessons</Link>
+                        <Link className = "p-3 rounded-md bg-schoolPurpleLight" href = {"/list/teachers?classId=${student.classId"}>Student&apos;s Teachers</Link>
+                        <Link className = "p-3 rounded-md bg-pink-50" href = {"/list/exams?classId=${student.classId"}>Student&apos;s Exams</Link>
+                        <Link className = "p-3 rounded-md bg-green-50" href = {"/list/assignments?classId=${student.classId"}>Student&apos;s Assignment</Link>
+                        <Link className = "p-3 rounded-md bg-schoolYellowLight" href = {"/list/results?classId=${student.classId"}>Student&apos;s Results</Link>
                     </div>
                 </div>
                 <Performance />

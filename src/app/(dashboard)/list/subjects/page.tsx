@@ -42,7 +42,7 @@ const SubjectListPage = () => {
             setSubjects(res.data.subjects);
             setCount(res.data.count);
         } catch (err) {
-            console.error("Ошибка загрузки батіків:", err);
+            console.error("Error:", err);
         }
     };
   
@@ -53,7 +53,7 @@ const SubjectListPage = () => {
     const renderRow = (item:SubjectList) => (
         <tr key={item.id} className = "border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-schoolPurpleLight">
             <td className = "flex items-center gap-4 p-4">{item.name}</td>
-            <td className = "hidden md:table-cell">{item.teachers?.join(", ")}</td>
+            <td className = "hidden md:table-cell">{item.teachers.map((t) => t.name).join(", ")}</td>
             <td>
                 <div className = "flex items-center gap-2">
                     { role === "admin" && (
