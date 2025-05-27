@@ -1,37 +1,70 @@
-const Announcements = () => {
-    return (
-        <div className = "bg-white p-4 rounded-md">
-            <div className = "flex justify-between items-center">
-                <h1 className = "text-xl font-semibold">Announcements</h1>
-                <span className = "text-xs text-gray-400">View All</span>
+"use client"
+
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+export const Announcements =  () => {
+  const [announcements, setAnnouncements] = useState<any>();
+  
+  useEffect(() => {
+        const fetchAnnouncments = async () => {
+            try {
+                const res = await axios.get(
+                    `http://localhost:3001/announcments`
+                );
+                setAnnouncements(res.data);
+
+            } catch (err) {
+                console.error("Ошибка загрузки событий:", err);
+            }
+        };
+
+        fetchAnnouncments();
+    }, []);
+
+  return (
+    <div className="bg-white p-4 rounded-md">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold">Announcements</h1>
+        <span className="text-xs text-gray-400">View All</span>
+      </div>
+      <div className="flex flex-col gap-4 mt-4">
+        {announcements && announcements[0] && (
+          <div className="bg-lamaSkyLight rounded-md p-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-medium">{announcements[0].title}</h2>
+              <span className="text-xs text-gray-400 bg-white rounded-md px-1 py-1">
+                {new Intl.DateTimeFormat("en-GB").format(announcements[0].date)}
+              </span>
             </div>
-            <div className = "flex flex-col gap-4 mt-4">
-                <div className = "bg-schoolSkyLight rounded-md p-4">
-                    <div className = "flex items-center justify-between">
-                        <h2 className = "font-medium">Lorem ipsum</h2>
-                        <span className = "text-xs text-gray-400 bg-white rounded-md px-1 py-1">2025-01-01</span>
-                    </div>
-                    <p className = "text-sm text-gray-400 mt-1">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
-                </div>
-
-                <div className = "bg-schoolPurpleLight rounded-md p-4">
-                    <div className = "flex items-center justify-between">
-                        <h2 className = "font-medium">Lorem ipsum</h2>
-                        <span className = "text-xs text-gray-400 bg-white rounded-md px-1 py-1">2025-01-01</span>
-                    </div>
-                    <p className = "text-sm text-gray-400 mt-1">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
-                </div>
-
-                <div className = "bg-schoolYellowLight rounded-md p-4">
-                    <div className = "flex items-center justify-between">
-                        <h2 className = "font-medium">Lorem ipsum</h2>
-                        <span className = "text-xs text-gray-400 bg-white rounded-md px-1 py-1">2025-01-01</span>
-                    </div>
-                    <p className = "text-sm text-gray-400 mt-1">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
-                </div>
+            <p className="text-sm text-gray-400 mt-1">{announcements[0].description}</p>
+          </div>
+        )}
+        {announcements && announcements[1] && (
+          <div className="bg-lamaPurpleLight rounded-md p-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-medium">{announcements[1].title}</h2>
+              <span className="text-xs text-gray-400 bg-white rounded-md px-1 py-1">
+                {new Intl.DateTimeFormat("en-GB").format(announcements[1].date)}
+              </span>
             </div>
-        </div>
-    )
-} 
+            <p className="text-sm text-gray-400 mt-1">{announcements[1].description}</p>
+          </div>
+        )}
+        {announcements && announcements[2] && (
+          <div className="bg-lamaYellowLight rounded-md p-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-medium">{announcements[2].title}</h2>
+              <span className="text-xs text-gray-400 bg-white rounded-md px-1 py-1">
+                {new Intl.DateTimeFormat("en-GB").format(announcements[2].date)}
+              </span>
+            </div>
+            <p className="text-sm text-gray-400 mt-1">{announcements[2].description}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
-export default Announcements
+export default Announcements;
