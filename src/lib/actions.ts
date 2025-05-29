@@ -1,6 +1,6 @@
 
 import axios from "axios";
-import { SubjectSchema } from "./formValidationSchemas"
+import { ClassSchema, SubjectSchema } from "./formValidationSchemas"
 
 export const createSubject = async (data:SubjectSchema) => {
     axios.post('http://localhost:3001/subject', data)
@@ -23,6 +23,36 @@ export const updateSubject = async (data:SubjectSchema) => {
 }
 
 export const deleteSubject = async (id:number) => {
+    axios.delete('http://localhost:3001/subject', { data: { id } })
+        .catch((e) => {
+            console.error('Error in submitting form:', e);
+            if (e.response) {
+                console.error('Error Response:', e.response);
+            }
+    });
+}
+
+export const createClass = async (data:ClassSchema) => {
+    axios.post('http://localhost:3001/class', data)
+        .catch((e) => {
+            console.error('Error in submitting form:', e);
+            if (e.response) {
+                console.error('Error Response:', e.response);
+            }
+    });
+}
+
+export const updateClass = async (data:ClassSchema) => {
+    axios.put('http://localhost:3001/class', data)
+        .catch((e) => {
+            console.error('Error in submitting form:', e);
+            if (e.response) {
+                console.error('Error Response:', e.response);
+            }
+    });
+}
+
+export const deleteClass = async (id:number) => {
     axios.delete('http://localhost:3001/subject', { data: { id } })
         .catch((e) => {
             console.error('Error in submitting form:', e);
