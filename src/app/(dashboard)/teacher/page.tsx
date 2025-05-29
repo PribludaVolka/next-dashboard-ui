@@ -10,7 +10,7 @@ const TeacherPage = () => {
             <div className = "w-full xl:w-2/3">
                 <div className = "h-[925px] bg-white p-4 rounded-md">
                     <h1 className = "text-xl font-semibold">Schedule</h1>
-                    <BigCalendar />
+                    <BigCalendar data={[]} />
                 </div>
             </div>
             {/*RIGHT*/}

@@ -46,7 +46,8 @@ type Inputs = z.infer<typeof schema>;
 const TeacherForm = ({
     type, data
 } : {
-    type:"create" | "update";data?:any
+    type:"create" | "update";
+    data?:any
 }) => {
 
     const {
