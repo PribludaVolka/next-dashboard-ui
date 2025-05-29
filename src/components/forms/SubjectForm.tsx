@@ -4,14 +4,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { subjectSchema, SubjectSchema } from "@/lib/formValidationSchemas";
-import { createSubject, updateSubject, deleteSubject } from "@/lib/actions";
+import { createSubject, updateSubject } from "@/lib/actions";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const SubjectForm = ({
   type,
   data,
+  setOpen,
+  relatedData,
 }: {
   type: "create" | "update";
   data?: any;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  relatedData?: any;
 }) => {
   const {
     register,
@@ -19,25 +26,28 @@ const SubjectForm = ({
     formState: { errors },
   } = useForm<SubjectSchema>({
     resolver: zodResolver(subjectSchema),
-    defaultValues: {
-      name: data?.name || "",
-    },
   });
 
-  const id = data?.id;
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const onSubmit = handleSubmit((data) => {
-    if (type === "create") {
-      createSubject(data);
-    } else {
-      const updateData = {
-        name: data.name,
-        id: id,
-      };
-      updateSubject(updateData);
+    if(type === "create"){
+        createSubject(data, setIsSuccess);
+    }else{
+        updateSubject(data);
     }
   });
 
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast(`Subject has been ${type === "create" ? "created" : "updated"}!`);
+      setOpen(false);
+      router.refresh();
+    }
+  }, [isSuccess, router, type, setOpen]);
+  const teachers = relatedData;
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
@@ -53,16 +63,36 @@ const SubjectForm = ({
           register={register}
           error={errors?.name}
         />
+        {data && (
+          <InputField
+            label="Id"
+            name="id"
+            defaultValue={data?.id}
+            register={register}
+            error={errors?.id}
+          />
+        )}
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Teachers</label>
+          <select
+            multiple
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("teachers")}
+            defaultValue={data?.teachers}
+          >
+            {teachers?.data.map(
+              (teacher: { id: string; name: string; surname: string }) => (
+                <option value={teacher.id} key={teacher.id}>
+                  {teacher.name + " " + teacher.surname}
+                </option>
+              )
+            )}
+          </select>
+        </div>
       </div>
-
-      <div className="flex gap-4">
-        <button
-          type="submit"
-          className="bg-blue-400 text-white p-2 rounded-md"
-        >
-          {type === "create" ? "Create" : "Update"}
-        </button>
-      </div>
+      <button className="bg-blue-400 text-white p-2 rounded-md">
+        {type === "create" ? "Create" : "Update"}
+      </button>
     </form>
   );
 };

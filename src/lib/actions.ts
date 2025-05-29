@@ -2,8 +2,9 @@
 import axios from "axios";
 import { ClassSchema, SubjectSchema } from "./formValidationSchemas"
 
-export const createSubject = async (data:SubjectSchema) => {
+export const createSubject = async (data:SubjectSchema, setIsSuccess?: any) => {
     axios.post('http://localhost:3001/subject', data)
+        .then(() => setIsSuccess(true))
         .catch((e) => {
             console.error('Error in submitting form:', e);
             if (e.response) {
@@ -22,8 +23,9 @@ export const updateSubject = async (data:SubjectSchema) => {
     });
 }
 
-export const deleteSubject = async (id:number) => {
+export const deleteSubject = async (id:number, setIsSuccess?: any) => {
     axios.delete('http://localhost:3001/subject', { data: { id } })
+        .then(() => setIsSuccess(true))
         .catch((e) => {
             console.error('Error in submitting form:', e);
             if (e.response) {
@@ -60,4 +62,10 @@ export const deleteClass = async (id:number) => {
                 console.error('Error Response:', e.response);
             }
     });
+}
+
+export const getSelectTeacher = async () => {
+    const data = await axios.get('http://localhost:3001/teachers/select');
+
+    return data;
 }
