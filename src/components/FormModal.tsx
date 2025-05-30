@@ -90,9 +90,9 @@ const FormModal = ({
       }
     }, [isSuccess, router]);
 
-    const onSubmit = (data: any) => {
+    const onSubmit = () => {
          if(table === "subject"){
-            deleteSubject(data, setIsSuccess);
+            deleteSubject(id, setIsSuccess);
         }
     };
 

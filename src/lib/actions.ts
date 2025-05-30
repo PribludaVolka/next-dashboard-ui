@@ -23,8 +23,9 @@ export const updateSubject = async (data:SubjectSchema) => {
     });
 }
 
-export const deleteSubject = async (id:number, setIsSuccess?: any) => {
-    axios.delete('http://localhost:3001/subject', { data: { id } })
+export const deleteSubject = async (id:any, setIsSuccess?: any) => {
+    const numId = Number(id);
+    axios.delete('http://localhost:3001/subject', { data: { id: numId } })
         .then(() => setIsSuccess(true))
         .catch((e) => {
             console.error('Error in submitting form:', e);
