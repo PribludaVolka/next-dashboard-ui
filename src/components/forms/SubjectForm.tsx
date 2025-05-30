@@ -33,8 +33,10 @@ const SubjectForm = ({
   const onSubmit = handleSubmit((data) => {
     if(type === "create"){
         createSubject(data, setIsSuccess);
+        window.location.reload();
     }else{
         updateSubject(data);
+        window.location.reload();
     }
   });
 

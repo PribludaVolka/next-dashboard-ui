@@ -92,6 +92,7 @@ const FormModal = ({
 
     const onSubmit = () => {
          if(table === "subject"){
+            window.location.reload();
             deleteSubject(id, setIsSuccess);
         }
     };
