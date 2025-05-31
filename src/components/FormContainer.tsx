@@ -34,12 +34,22 @@ const FormContainer =  ({ table, type, data, id }: FormContainerProps) => {
         }
     };
 
+    const fetchClasses = async () => {
+        const classGrades = await axios.get(`http://localhost:3001/grade/select`);
+        const classTeachers = await axios.get(`http://localhost:3001/teachers/select`);
+        const relatedData = { teachers: classTeachers.data, grades: classGrades.data };
+        setRelatedData(relatedData);
+    };
+
     useEffect(() => {
         if (type !== "delete") {
             switch (table) {
                 case "subject":
-                    fetchTeachers();
-                    break;
+                  fetchTeachers();
+                  break;
+                case "class":
+                  fetchClasses();
+                  break;
                 default:
                     break;
             }

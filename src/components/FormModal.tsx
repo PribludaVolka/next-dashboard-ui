@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
-import { deleteSubject } from "@/lib/actions";
+import { deleteClass, deleteSubject } from "@/lib/actions";
 
 const deleteActionMap = {
   subject: deleteSubject,
@@ -58,6 +58,14 @@ const forms: {
       relatedData={relatedData}
     />
   ),
+  class: (setOpen, type, data, relatedData) => (
+    <ClassForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
 };
 
 const FormModal = ({
@@ -91,9 +99,13 @@ const FormModal = ({
     }, [isSuccess, router]);
 
     const onSubmit = () => {
-         if(table === "subject"){
+        if(table === "subject"){
             window.location.reload();
             deleteSubject(id, setIsSuccess);
+        }
+        if(table === "class"){
+            window.location.reload();
+            deleteClass(id, setIsSuccess);
         }
     };
 

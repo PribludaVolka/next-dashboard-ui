@@ -1,5 +1,6 @@
 "use client"
 
+import FormContainer from "@/components/FormContainer"
 import FormModal from "@/components/FormModal"
 import Pagination from "@/components/Pagination"
 import Table from "@/components/Table"
@@ -56,6 +57,7 @@ const ClassListPage = () => {
     const fetchClasses = async (page = 1, searchValue = '') => {
         try {
             const res = await axios.get(`http://localhost:3001/classes?page=${page}&search=${searchValue}`);
+            console.log(res.data.classes)
             setClasses(res.data.classes);
             setCount(res.data.count);
         } catch (err) {
@@ -77,8 +79,8 @@ const ClassListPage = () => {
             <div className = "flex items-center gap-2">
                     { role === "admin" && (
                         <>
-                            <FormModal table={"class"} type={"update"} data={item} />
-                            <FormModal table={"class"} type={"delete"} id={item.id} />
+                            <FormContainer table="class" type="update" data={item} />
+                            <FormContainer table="class" type="delete" id={item.id} />
                         </>
                     )}
                 </div>
@@ -95,7 +97,7 @@ const ClassListPage = () => {
                     <TableSearch value={searchValue} onChange={(e: any) => setSearchValue(e)} />
                     <div className = "flex items-center gap-4 self-end">
                         { role === "admin" && (
-                            <FormModal table={"class"} type={"create"} />
+                            <FormContainer table="class" type="create" />
                         )}
                     </div>
                 </div>

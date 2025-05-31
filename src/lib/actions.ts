@@ -35,8 +35,8 @@ export const deleteSubject = async (id:any, setIsSuccess?: any) => {
     });
 }
 
-export const createClass = async (data:ClassSchema) => {
-    axios.post('http://localhost:3001/class', data)
+export const createClass = async (data:ClassSchema, setIsSuccess?: any) => {
+    axios.post('http://localhost:3001/classes', data)
         .catch((e) => {
             console.error('Error in submitting form:', e);
             if (e.response) {
@@ -46,7 +46,7 @@ export const createClass = async (data:ClassSchema) => {
 }
 
 export const updateClass = async (data:ClassSchema) => {
-    axios.put('http://localhost:3001/class', data)
+    axios.put('http://localhost:3001/classes', data)
         .catch((e) => {
             console.error('Error in submitting form:', e);
             if (e.response) {
@@ -55,8 +55,9 @@ export const updateClass = async (data:ClassSchema) => {
     });
 }
 
-export const deleteClass = async (id:number) => {
-    axios.delete('http://localhost:3001/subject', { data: { id } })
+export const deleteClass = async (id:any, setIsSuccess?: any) => {
+    const numId = Number(id);
+    axios.delete('http://localhost:3001/classes', { data: { id:numId } })
         .catch((e) => {
             console.error('Error in submitting form:', e);
             if (e.response) {

@@ -1,82 +1,148 @@
-"use client"
+"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import InputField from "../InputField";
-import Image from "next/image";
+
+import {
+  createClass,
+  createSubject,
+  updateClass,
+  updateSubject,
+} from "@/lib/actions";
+import { useFormState } from "react-dom";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import { classSchema, ClassSchema } from "@/lib/formValidationSchemas";
-import { createClass, updateClass } from "@/lib/actions";
 
 const ClassForm = ({
-    type, 
-    data,
-} : {
-    type:"create" | "update";
-    data?:any
+  type,
+  data,
+  setOpen,
+  relatedData,
+}: {
+  type: "create" | "update";
+  data?: any;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  relatedData?: any;
 }) => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm <ClassSchema>({
-        resolver: zodResolver(classSchema),
-        defaultValues: {
-            name: data?.name || "",
-        },
-      });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ClassSchema>({
+    resolver: zodResolver(classSchema),
+  });
 
-      const id = data?.id;
+  const [isSuccess, setIsSuccess] = useState(false);
 
-      const onSubmit = handleSubmit((data) => {
-          if (type === "create") {
-            createClass(data);
-          } else {
-            const updateData = {
-              name: data.name,
-              id: id,
-            };
-            updateClass(updateData);
-          }
-        });
+   const onSubmit = handleSubmit((data) => {
+        if(type === "create"){
+            createClass(data, setIsSuccess);
+            window.location.reload();
+        }else{
+            updateClass(data);
+            window.location.reload();
+        }
+  });
 
-    return (
-        <form className = "flex flex-col gap-8" onSubmit={onSubmit}>
-            <h1 className = "text-xl font-semibold">Create a new class</h1>
-            <span className = "text-xs text-gray-400 font-medium">Authentication Information</span>
-            <div className = "flex justify-between flex-wrap gap-4">
-                <InputField label = "Username" name = "username" defaultValue={data?.username} register={register} error={errors?.username}/>
-                <InputField label = "Email" name = "email" defaultValue={data?.email} register={register} error={errors?.email}/>
-                <InputField label = "Password" name = "password" type = "" defaultValue={data?.password} register={register} error={errors?.password}/>
-            </div>
-            <span className = "text-xs text-gray-400 font-medium">Personal Information</span>
-            <div className = "flex justify-between flex-wrap gap-4">
-                <InputField label = "First Name" name = "firstName" defaultValue={data?.firstName} register={register} error={errors.firstName}/>
-                <InputField label = "Last Name" name = "lastName" defaultValue={data?.lastName} register={register} error={errors.lastName}/>
-                <InputField label = "Phone" name = "phone" defaultValue={data?.phone} register={register} error={errors.phone}/>
-                <InputField label = "Address" name = "address" defaultValue={data?.address} register={register} error={errors.address}/>
-                <InputField label = "Blood Type" name = "bloodType" defaultValue={data?.bloodType} register={register} error={errors.bloodType}/>
-                <InputField label = "Birthday" name = "birthday" defaultValue={data?.birthday} register={register} error={errors.birthday} type="date" />
-                <div className = "flex flex-col gap-2 w-full md:w-1/4">
-                    <label className = "text-xs text-gray-500">Sex</label>
-                    <select className = "ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full" {...register("sex")} defaultValue={data?.sex}>
-                        <option value= "male">Male</option>
-                        <option value= "female">Female</option>
-                    </select>
-                    {errors.sex && <p className = "text-xs text-red-400">{errors.sex.toString()}</p>}
-                </div>
-                <div className = "flex flex-col gap-2 w-full md:w-1/4 justify-center">
-                    <label className = "text-xs text-gray-500 flex items-center gap-2 cursor-pointer" htmlFor = "img">
-                        <Image src = "/upload.png" alt = "" width={28} height={28} />
-                        <span>Upload a photo</span>
-                    </label>
-                    <input id = "img" type="file" {...register("img")} className = "hidden" />
-                    {errors.img?.message && <p className = "text-xs text-red-400">{errors.img.message.toString()}</p>}
-                </div>
-            </div>
-            <button className = "bg-blue-400 text-white p-2 rounded-md">{type === "create" ? "Create" : "Update"}</button>
-        </form>
-    );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast(`Subject has been ${type === "create" ? "created" : "updated"}!`);
+      setOpen(false);
+      router.refresh();
+    }
+  }, [isSuccess, router, type, setOpen]);
+
+  const { teachers, grades } = relatedData;
+
+  return (
+    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
+      <h1 className="text-xl font-semibold">
+        {type === "create" ? "Create a new class" : "Update the class"}
+      </h1>
+
+      <div className="flex justify-between flex-wrap gap-4">
+        <InputField
+          label="Class name"
+          name="name"
+          defaultValue={data?.name}
+          register={register}
+          error={errors?.name}
+        />
+        <InputField
+          label="Capacity"
+          name="capacity"
+          defaultValue={data?.capacity}
+          register={register}
+          error={errors?.capacity}
+        />
+        {data && (
+          <InputField
+            label="Id"
+            name="id"
+            defaultValue={data?.id}
+            register={register}
+            error={errors?.id}
+          />
+        )}
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Supervisor</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("supervisorId")}
+            defaultValue={data?.teachers}
+          >
+            {teachers.map(
+              (teacher: { id: string; name: string; surname: string }) => (
+                <option
+                  value={teacher.id}
+                  key={teacher.id}
+                  selected={data && teacher.id === data.supervisorId}
+                >
+                  {teacher.name + " " + teacher.surname}
+                </option>
+              )
+            )}
+          </select>
+          {errors.supervisorId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.supervisorId.message.toString()}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Grade</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("gradeId")}
+            defaultValue={data?.gradeId}
+          >
+            {grades.map((grade: { id: number; level: number }) => (
+              <option
+                value={grade.id}
+                key={grade.id}
+                selected={data && grade.id === data.gradeId}
+              >
+                {grade.level}
+              </option>
+            ))}
+          </select>
+          {errors.gradeId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.gradeId.message.toString()}
+            </p>
+          )}
+        </div>
+      </div>
+      <button className="bg-blue-400 text-white p-2 rounded-md">
+        {type === "create" ? "Create" : "Update"}
+      </button>
+    </form>
+  );
 };
 
 export default ClassForm;
