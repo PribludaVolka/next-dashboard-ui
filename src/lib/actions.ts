@@ -1,6 +1,6 @@
 
 import axios from "axios";
-import { ClassSchema, SubjectSchema } from "./formValidationSchemas"
+import { ClassSchema, SubjectSchema, TeacherSchema } from "./formValidationSchemas"
 
 export const createSubject = async (data:SubjectSchema, setIsSuccess?: any) => {
     axios.post('http://localhost:3001/subject', data)
@@ -58,6 +58,66 @@ export const updateClass = async (data:ClassSchema) => {
 export const deleteClass = async (id:any, setIsSuccess?: any) => {
     const numId = Number(id);
     axios.delete('http://localhost:3001/classes', { data: { id:numId } })
+        .catch((e) => {
+            console.error('Error in submitting form:', e);
+            if (e.response) {
+                console.error('Error Response:', e.response);
+            }
+    });
+}
+
+export const createTeacher = async (data:any, setIsSuccess?: any) => {
+    axios.post('http://localhost:3001/teachers', data)
+        .catch((e) => {
+            console.error('Error in submitting form:', e);
+            if (e.response) {
+                console.error('Error Response:', e.response);
+            }
+    });
+}
+
+export const updateTeacher  = async (data:any) => {
+    axios.put('http://localhost:3001/teachers', data)
+        .catch((e) => {
+            console.error('Error in submitting form:', e);
+            if (e.response) {
+                console.error('Error Response:', e.response);
+            }
+    });
+}
+
+export const deleteTeacher  = async (id:any, setIsSuccess?: any) => {
+    axios.delete('http://localhost:3001/teachers', { data: { id } })
+        .catch((e) => {
+            console.error('Error in submitting form:', e);
+            if (e.response) {
+                console.error('Error Response:', e.response);
+            }
+    });
+}
+
+export const deleteStusent  = async (id:any, setIsSuccess?: any) => {
+    axios.delete('http://localhost:3001/students', { data: { id } })
+        .catch((e) => {
+            console.error('Error in submitting form:', e);
+            if (e.response) {
+                console.error('Error Response:', e.response);
+            }
+    });
+}
+
+export const createStudent = async (data:any, setIsSuccess?: any) => {
+    axios.post('http://localhost:3001/students', data)
+        .catch((e) => {
+            console.error('Error in submitting form:', e);
+            if (e.response) {
+                console.error('Error Response:', e.response);
+            }
+    });
+}
+
+export const updateStudent  = async (data:any) => {
+    axios.put('http://localhost:3001/students', data)
         .catch((e) => {
             console.error('Error in submitting form:', e);
             if (e.response) {

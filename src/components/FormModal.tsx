@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
-import { deleteClass, deleteSubject } from "@/lib/actions";
+import { deleteClass, deleteStusent, deleteSubject, deleteTeacher } from "@/lib/actions";
 
 const deleteActionMap = {
   subject: deleteSubject,
@@ -66,6 +66,22 @@ const forms: {
       relatedData={relatedData}
     />
   ),
+  teacher: (setOpen, type, data, relatedData) => (
+    <TeacherForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+  student: (setOpen, type, data, relatedData) => (
+    <StudentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
 };
 
 const FormModal = ({
@@ -106,6 +122,14 @@ const FormModal = ({
         if(table === "class"){
             window.location.reload();
             deleteClass(id, setIsSuccess);
+        }
+        if(table === "teacher"){
+            window.location.reload();
+            deleteTeacher(id, setIsSuccess);
+        }
+        if(table === "student"){
+            window.location.reload();
+            deleteStusent(id, setIsSuccess);
         }
     };
 

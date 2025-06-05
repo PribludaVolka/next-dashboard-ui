@@ -13,6 +13,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { useSearchParams } from "next/navigation"
+import FormContainer from "@/components/FormContainer"
 
 type StudentList = IStudent & {attendances:IAttendance[]} & {results:IResult[]};
 
@@ -40,13 +41,13 @@ const columns = [
             <td className = "hidden md:table-cell">{item.address}</td>
             <td>
                 <div className = "flex items-center gap-2">
-                    <Link href={"/list/students/${item.id}"}>
-                        <button className = "w-7 h-7 flex items-center justify-center rounded-full bg-schoolSky">
+                    <Link href={`/list/students/${item.id}`}>
+                        <button className = "w-7 h-7 flex items-center justify-center rounded-full  bg-lamaSky">
                             <Image src = "/view.png" alt = "" width={16} height={16} />
                         </button>
                     </Link>
                     { role === "admin" && (
-                        <FormModal table={"student"} type={"delete"} id={item.id}/>
+                        <FormContainer table={"student"} type={"delete"} id={item.id}/>
                         )}
                 </div>
             </td>
@@ -86,7 +87,7 @@ const StudentListPage = () => {
                     <TableSearch value={searchValue} onChange={(e: any) => setSearchValue(e)} />
                     <div className = "flex items-center gap-4 self-end">
                         { role === "admin" && (
-                            <FormModal table={"student"} type={"create"} />
+                            <FormContainer table={"student"} type={"create"} />
                         )}
                     </div>
                 </div>

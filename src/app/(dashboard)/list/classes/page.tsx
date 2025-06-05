@@ -57,7 +57,6 @@ const ClassListPage = () => {
     const fetchClasses = async (page = 1, searchValue = '') => {
         try {
             const res = await axios.get(`http://localhost:3001/classes?page=${page}&search=${searchValue}`);
-            console.log(res.data.classes)
             setClasses(res.data.classes);
             setCount(res.data.count);
         } catch (err) {

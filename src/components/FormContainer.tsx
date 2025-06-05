@@ -41,6 +41,20 @@ const FormContainer =  ({ table, type, data, id }: FormContainerProps) => {
         setRelatedData(relatedData);
     };
 
+    const fetchSubjects = async () => {
+        const subjects = await axios.get(`http://localhost:3001/subject/select`);
+        const relatedData = { subjects: subjects.data };
+        setRelatedData(relatedData);
+    };
+
+    const fetchGrades = async () => {
+        const grades = await axios.get(`http://localhost:3001/grade/select`);
+        const classes = await axios.get(`http://localhost:3001/classes/select`);
+        const relatedData = { classes: classes.data, grades: grades.data };
+        setRelatedData(relatedData);
+    };
+
+
     useEffect(() => {
         if (type !== "delete") {
             switch (table) {
@@ -50,6 +64,11 @@ const FormContainer =  ({ table, type, data, id }: FormContainerProps) => {
                 case "class":
                   fetchClasses();
                   break;
+                case "teacher":
+                  fetchSubjects();
+                  break;
+                case "student":
+                  fetchGrades();
                 default:
                     break;
             }
